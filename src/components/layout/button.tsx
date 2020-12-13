@@ -10,8 +10,8 @@ export function NavigationButton({ children, link, exact = false }: NavigationBu
 	return (
 		<NavLink
 			to={link}
-			className="text-white hover:bg-indigo-500 hover:bg-opacity-75 rounded-md py-2 px-3 text-sm font-medium"
-			activeClassName="bg-indigo-700 text-white"
+			className="text-white hover:bg-gray-700 hover:bg-opacity-75 rounded-md py-2 px-3 text-sm font-medium"
+			activeClassName="bg-gray-800 text-white"
 			exact={exact}
 		>
 			{children}
