@@ -23,6 +23,7 @@
     "haversine-distance": "^1.2.1",
     "koa": "^2.13.0",
     "koa-bodyparser": "^4.3.0",
+    "koa-static": "^5.0.0",
     "node-fetch": "^2.6.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
