@@ -21,7 +21,7 @@ const logger = async (ctx, next) => {
 	console.log(`${ctx.status}: ${ctx.request.url}`)
 };
 
-router.get("/proxy", async (ctx) => {
+router.get("/api/proxy", async (ctx) => {
   const { term } = ctx.query;
   const url = `https://api.yelp.com/v3/businesses/search?term=${term}&location=Chicago, IL`;
 
@@ -47,7 +47,7 @@ app.use(cors({ origin: "*" }));
 app.use(logger);
 app.use(ipChecking);
 app.use(bodyParser());
-// app.use(serve('public'));
+app.use(serve('build'));
 app.use(router.routes());
 
 app.listen(PORT, () => {
