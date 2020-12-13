@@ -8,7 +8,7 @@ const fetch = require("node-fetch");
 const requestIp = require('request-ip');
 const ipChecking = require('./ipChecking');
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 const app = new Koa();
 const router = new Router();
