@@ -30,7 +30,7 @@ function App() {
 						<Refer />
 					</Route>
 					<Route path="*">
-						{data?.businesses ? null : (<h2 class="text-base font-semibold text-indigo-600 tracking-wide uppercase">Get Searching</h2>)}
+						{data?.businesses ? null : (<h2 className="text-base font-semibold text-indigo-600 tracking-wide uppercase">Get Searching</h2>)}
 						<ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">{
 							(data?.businesses || []).map((business: Record<string, any>) => {
 								return <Card key={business.id} business={business} />
