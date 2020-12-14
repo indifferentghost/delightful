@@ -58,7 +58,7 @@ export default function Refer() {
 			<main className="px-4 py-5 sm:p-6">
 				<div className="xl:flex-1">
 					<h2 className="w-full text-2xl font-extrabold tracking-tight text-gray-500 sm:text-3xl">
-						You've been referred to {params.get('business')!.replaceAll('_', ' ')}
+						You've been referred to {(params.get('business') || '').replaceAll('_', ' ')}
 					</h2>
 				</div>
 				<div className="mt-8 sm:w-full sm:max-w-md xl:mt-0 xl:ml-8">

@@ -5,11 +5,11 @@ const Koa = require("koa");
 const cors = require("@koa/cors");
 const Router = require("@koa/router");
 const bodyParser = require("koa-bodyparser");
-const serve = require("koa-static");
 const fetch = require("node-fetch");
 const requestIp = require("request-ip");
 const ipChecking = require("./ipChecking");
 const { addReferralRow, addAcceptedReferral } = require("./sheets");
+const mount = require('./static-spa');
 
 const PORT = process.env.PORT || 3000;
 
@@ -46,18 +46,18 @@ router.get("/api/proxy", async (ctx) => {
   ctx.body = result;
 });
 
-console.log("loading /api/refer");
 router.post("/api/refer", addReferralRow);
 router.post("/api/accept", addAcceptedReferral);
+// router.get("/*", mount(serve('build')))
 
 app.use(cors({ origin: "*" }));
 app.use(logger);
 app.use(ipChecking);
 app.use(bodyParser());
-if (process.env.NODE_ENV === "production") {
-  app.use(serve("build"));
-}
 app.use(router.routes());
+// if (process.env.NODE_ENV === "production") {
+app.use(mount({ folder: 'build' }))
+// }
 
 app.listen(PORT, () => {
   console.log(`listening Port ${PORT}...\n`);
