@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { useSearchContext } from '../../useSearchContext';
+import { useSearchContext } from '../../hooks/useSearchContext';
 
 type FormValues = { search: string}
 

@@ -3,9 +3,11 @@ import React, { StrictMode } from 'react';
 import { render } from 'react-dom';
 import { BrowserRouter as Router } from "react-router-dom";
 import App from './App';
-import SearchProvider from './useSearchContext';
+import SearchProvider from './hooks/useSearchContext';
 
 import './styles.css';
+import { UserProvider } from './hooks/useUserId';
+import { NotificationProvider } from './components/notification';
 
 /**
  * @todo: setup user accounts
@@ -26,9 +28,13 @@ import './styles.css';
 render(
 	<StrictMode>
 		<Router>
-			<SearchProvider>
-				<App />
-			</SearchProvider>
+			<UserProvider>
+				<SearchProvider>
+					<NotificationProvider>
+						<App />
+					</NotificationProvider>
+				</SearchProvider>
+			</UserProvider>
 		</Router>
 	</StrictMode>,
 	document.querySelector('#root')

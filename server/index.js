@@ -1,4 +1,6 @@
-require("dotenv").config();
+if (process.env.NODE_ENV !== 'production') {
+  require("dotenv").config();
+}
 const Koa = require("koa");
 const cors = require("@koa/cors");
 const Router = require("@koa/router");
@@ -7,6 +9,7 @@ const serve = require("koa-static");
 const fetch = require("node-fetch");
 const requestIp = require('request-ip');
 const ipChecking = require('./ipChecking');
+const { addRow } = require("./sheets");
 
 const PORT = process.env.PORT || 3000;
 
@@ -18,7 +21,7 @@ const logger = async (ctx, next) => {
   } catch (e) {
     console.error(e);
   }
-	console.log(`${ctx.status}: ${ctx.request.url}`)
+	console.log(`${ctx.status}: ${ctx.request.method} ${ctx.request.url}`)
 };
 
 router.get("/api/proxy", async (ctx) => {
@@ -43,11 +46,16 @@ router.get("/api/proxy", async (ctx) => {
 	ctx.body = result;
 });
 
+console.log('loading /api/refer')
+router.post('/api/refer', addRow)
+
 app.use(cors({ origin: "*" }));
 app.use(logger);
 app.use(ipChecking);
 app.use(bodyParser());
-app.use(serve('build'));
+if (process.env.NODE_ENV === 'production') {
+  app.use(serve('build'));
+}
 app.use(router.routes());
 
 app.listen(PORT, () => {

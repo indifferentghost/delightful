@@ -1,9 +1,10 @@
 import './fast-refresh-fix'
-import React, { useContext } from 'react';
+import React from 'react';
 import Layout from './components/layout/layout';
 import { NavigationButton } from './components/layout/button';
-import { useSearchContext } from './useSearchContext';
+import { useSearchContext } from './hooks/useSearchContext';
 import { Card } from './components/card';
+import { Notification } from './components/notification';
 
 const Navigation = () => {
 	return (
@@ -19,6 +20,8 @@ function App() {
 
 	console.log('app', data.businesses)
 	return (
+		<>
+		<Notification />
 		<Layout navigation={<Navigation />}>
 			<ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">{
 				(data?.businesses || []).map((business: Record<string, any>) => {
@@ -26,6 +29,7 @@ function App() {
 				})
 			}</ul>
 		</Layout>
+		</>
 	);
 }
 

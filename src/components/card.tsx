@@ -1,6 +1,10 @@
 import React, { useMemo } from 'react';
-import { useSearchContext } from '../useSearchContext';
+import { useSearchContext } from '../hooks/useSearchContext';
 import haversine from 'haversine-distance'
+import { usePostReferral } from '../hooks/useUserId';
+import { v4 as uuid } from 'uuid';
+import copy from 'copy-to-clipboard';
+import { useNotificationContext } from './notification';
 
 const Star = () => {
 	return (
@@ -11,21 +15,28 @@ const Star = () => {
 }
 
 export function Card({ business }: { business: Record<string, any> }) {
+	const { setMessage } = useNotificationContext();
 	const { data } = useSearchContext();
 	const distance = useMemo(() => {
 		if (!data?.coordinates) return null;
 		return haversine(data?.coordinates, business.coordinates);
 	}, [data?.coordinates, business])
 
+	const [postReferral] = usePostReferral()
+
 	const buttonClick = async () => {
+		const referralId = uuid();
+		postReferral({ place: business.alias, referralId: referralId });
+		const url = `https://delightful-referals.herokuapp.com/referral?referralId=${referralId}`
 		if (navigator.share) {
 			try {
-				await navigator.share({ url: 'https://example.com' })
+				await navigator.share({ url });
 			} catch (error) {
 				console.error(error.message)
 			}
 		} else {
-			console.log(`Your system doesn't support sharing files.`);
+			copy(url);
+			setMessage!('Copied to Clipboard');
 		}
 	}
 
@@ -50,7 +61,7 @@ export function Card({ business }: { business: Record<string, any> }) {
 					{distance ? <p className="mt-1 text-gray-500 text-sm truncate">{(distance / 1609).toFixed(1)} miles</p> : null}
 					{business.price ? <p className="text-gray-500 text-sm truncate">{business.price}</p> : null}
 					</div>
-					<button className="inline-flex m-1 items-center px-5 py-1.5 text-xs font-medium rounded-full shadow-sm text-white bg-orange-400 hover:bg-orange-300 focus:outline-none focus:ring-2 focus:ring-indigo-200">refer</button>
+					<button onClick={buttonClick} className="inline-flex m-1 items-center px-5 py-1.5 text-xs font-medium rounded-full shadow-sm text-white bg-orange-400 hover:bg-orange-300 focus:outline-none focus:ring-2 focus:ring-indigo-200">refer</button>
 					</div>
 				</div>
 			</div>
