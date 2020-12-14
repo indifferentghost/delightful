@@ -27,7 +27,7 @@ export function Card({ business }: { business: Record<string, any> }) {
 	const buttonClick = async () => {
 		const referralId = uuid();
 		postReferral({ place: business.alias, referralId: referralId });
-		const url = `https://delightful-referals.herokuapp.com/referral?referralId=${referralId}`
+		const url = `https://delightful-referals.herokuapp.com/referral?referralId=${referralId}&business=${business.name.replace(' ', '_')}`
 		if (navigator.share) {
 			try {
 				await navigator.share({ url });

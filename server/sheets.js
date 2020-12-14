@@ -1,42 +1,61 @@
 const { GoogleSpreadsheet } = require("google-spreadsheet");
-const key = require("./env.json")
+const key = require("./env.json");
 
-async function initConnection() {
-  const doc = new GoogleSpreadsheet(process.env.GOOGLE_SHEETS_ID);
-  await doc.useServiceAccountAuth({
-		client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-  	private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\\n/g, '\n')
-	});
-	console.log('sucessfully did thing')
-  await doc.loadInfo();
-  return doc;
-}
-
-function getSheet() {
+function initConnection() {
   let doc;
   return async function () {
-    if (!doc) {
-      doc = await initConnection();
-			console.log('doc.length', doc.length)
+    if (doc) {
+      return doc;
     }
-    return doc.sheetsByIndex[0];
+
+    doc = new GoogleSpreadsheet(process.env.GOOGLE_SHEETS_ID);
+    await doc.useServiceAccountAuth({
+      client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
+      private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\\n/g, "\n"),
+    });
+    console.log("sucessfully did thing");
+    await doc.loadInfo();
+    return doc;
+  };
+}
+
+const connection = initConnection();
+function getSheet() {
+  let doc;
+  return async function (index) {
+    if (!doc) {
+      doc = await connection();
+      console.log("doc.length", doc.length);
+    }
+    return doc.sheetsByIndex[index];
   };
 }
 
 const memoizedSheet = getSheet();
-memoizedSheet();
 
-module.exports.addRow = async function addRow(ctx) {
+module.exports.addReferralRow = async function addReferralRow(ctx) {
   try {
     const values = ctx.request.body;
 
-		console.log(values);
-    const sheet = await memoizedSheet();
+    const sheet = await memoizedSheet(0);
     const row = await sheet.addRow(values);
-    console.log(`row appended.`);
-		ctx.status = 201;
+    ctx.status = 201;
   } catch (error) {
-		// console.log(error);
+    ctx.status = 500;
+    ctx.body = { error: error.message };
+  }
+};
+
+module.exports.addAcceptedReferral = async function addReferralRow(ctx) {
+	try {
+    const { referralId, userId, email } = ctx.request.body;
+
+		console.log(ctx.request.body)
+
+    const sheet = await memoizedSheet(1);
+    const row = await sheet.addRow({ acceptedReferral: referralId, userId, email });
+    ctx.status = 201;
+  } catch (error) {
     ctx.status = 500;
     ctx.body = { error: error.message };
   }
