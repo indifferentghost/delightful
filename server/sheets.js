@@ -1,5 +1,4 @@
 const { GoogleSpreadsheet } = require("google-spreadsheet");
-const key = require("./env.json");
 
 function initConnection() {
   let doc;
